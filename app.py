@@ -29,9 +29,19 @@ def add():
 
 @app.route("/update/<int:fund_id>", methods=["POST"])
 def update(fund_id):
-    update_name = request.form.get("update_name")
-    update_weightage = request.form.get("update_weightage")
-    update_fund = Fund(name=update_name, weightage=update_weightage)
+    
+    if request.form.get("update_name") == '':
+        raise TypeError("Please give proper name")
+    else:
+        update_name = request.form.get("update_name")
+
+    if request.form.get("update_weightage") == '':
+        raise TypeError("Please give proper weightage")
+    else:
+        update_weightage = request.form.get("update_weightage")
+    
+
+    update_fund = Fund(id=fund_id, name=update_name, weightage=update_weightage)
     fund = Fund.query.filter_by(id=fund_id).first()
     db.session.delete(fund)
     db.session.add(update_fund)
