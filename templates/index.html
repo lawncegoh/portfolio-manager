@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio Tracker</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+</head>
+
+<body>
+    <div style="margin-top: 50px;" class="ui container">
+        <h1 class="ui center aligned header">Fund List</h1>
+
+        <form class="ui form" action="/add" method="post">
+            <div class="field">
+                <label>Funds</label>
+                <input type="text" name="name" placeholder="Add Fund Name">
+                <input type="text" name="weightage" placeholder="Add Fund Weightage">
+                <button class="ui blue button" type="submit">Add</button>
+            </div>
+        </form>
+
+        <hr>
+        {% for fund in fund_list %}
+
+        <div class="ui segment">
+            <p class="ui big header">{{ fund.id }} | {{ fund.name }}</p>
+
+            <p class="ui big header">{{ fund.weightage }}</p>
+            <form class="ui form" action="/update/{{ fund.id }}" method="post">
+                <div class="field">
+                    <input type="text" name="update_name" placeholder="Update Name">
+                    <input type="text" name="update_weightage" placeholder="Update Weightage">
+                    <button class="ui blue button" type="submit">Update</button>   
+                </div>
+            </form>
+
+            <a class="ui red button" href="/delete/{{ fund.id }}">Delete</a>
+        </div>
+
+        {% endfor %}
+    </div>
+
+    <div style="margin-top: 50px;" class="ui container">
+        <h1 class="ui center aligned header">Portfolio Statistics</h1>
+    </div>
+</body>
+
+</html>
