@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask import Flask, render_template, request, redirect, url_for
+from yahoo_fin.stock_info import get_data
 
 app = Flask(__name__)
 
@@ -23,6 +24,7 @@ def add():
     name = request.form.get("name")
     weightage = request.form.get("weightage")
     new_fund = Fund(name=name, weightage=weightage)
+    # after adding, we can add the top 10 holdings and their percentages for this fund
     db.session.add(new_fund)
     db.session.commit()
     return redirect(url_for("home"))
@@ -55,6 +57,23 @@ def delete(fund_id):
     db.session.commit()
     return redirect(url_for("home"))
 
+@app.route("/refresh/<string:start_date>/<string:end_date>")
+def refresh():
+# ticker_list = ["amzn", "aapl", "ba"]
+# historical_datas = {}
+# for ticker in ticker_list:
+#     historical_datas[ticker] = get_data(ticker)
+
+#### use a ticker list then get data for the entire portfolio
+
+# refresh based on the start and end date, using this df to come up with a total returns value or chart first
+# amazon_weekly= get_data("xlf", start_date=start_date, end_date=end_date, index_as_date = True, interval="1wk")
+# print(amazon_weekly)
+
 if __name__ == "__main__":
     db.create_all()
     app.run(debug=True)
+
+
+
+
