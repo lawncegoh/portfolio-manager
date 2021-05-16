@@ -57,18 +57,22 @@ def delete(fund_id):
     db.session.commit()
     return redirect(url_for("home"))
 
-@app.route("/refresh/<string:start_date>/<string:end_date>")
+@app.route("/refresh/?start_date=<string:start_date>&end_date=<string:end_date>", methods=["POST"])
 def refresh():
-# ticker_list = ["amzn", "aapl", "ba"]
-# historical_datas = {}
-# for ticker in ticker_list:
-#     historical_datas[ticker] = get_data(ticker)
+    for all in Fund.query.all():
+        print(all)
+    # amazon_weekly= get_data("xlf", start_date=request.form.get("start_date"), end_date=request.form.get("end_date"), index_as_date = True, interval="1wk")
+    # ticker_list = ["SPY", "IUSV", "XLR"]
+    # historical_datas = {}
+    # for ticker in ticker_list:
+    #     historical_datas[ticker] = get_data(ticker)
 
-#### use a ticker list then get data for the entire portfolio
+    #### use a ticker list then get data for the entire portfolio
 
-# refresh based on the start and end date, using this df to come up with a total returns value or chart first
-# amazon_weekly= get_data("xlf", start_date=start_date, end_date=end_date, index_as_date = True, interval="1wk")
-# print(amazon_weekly)
+    # refresh based on the start and end date, using this df to come up with a total returns value or chart first
+    # amazon_weekly= get_data("xlf", start_date=start_date, end_date=end_date, index_as_date = True, interval="1wk")
+    # print(amazon_weekly)
+
 
 if __name__ == "__main__":
     db.create_all()
