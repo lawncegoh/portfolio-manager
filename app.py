@@ -3,6 +3,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask import Flask, render_template, request, redirect, url_for
 from yahoo_fin.stock_info import get_data
 import logging
+import matplotlib.pyplot as plt
+import pandas as pd
 
 app = Flask(__name__)
 
@@ -15,10 +17,13 @@ class Fund(db.Model):
     name = db.Column(db.String(100))
     weightage = db.Column(db.Float)
 
+fund_datas={}
+fund_weights={}
+
 @app.route("/")
 def home():
     fund_list = Fund.query.all()
-    return render_template("index.html", fund_list=fund_list)
+    return render_template("index.html", fund_list=fund_list, fund_datas=fund_datas)
 
 @app.route("/add", methods=["POST"])
 def add():
@@ -58,25 +63,33 @@ def delete(fund_id):
     db.session.commit()
     return redirect(url_for("home"))
 
-@app.route("/refresh/", methods=["get"])
+@app.route("/refresh", methods=["POST"])
 def refresh():
     fund_list = Fund.query.all()
+    intermediate_drawdown = 0
 
     ticker_list = []
     for each in fund_list:
         ticker_list.append(each.name)
+        fund_weights[each.name] = each.weightage
 
-    historical_datas = {}
     for ticker in ticker_list:
-        historical_datas[ticker] = get_data(ticker)
+        fund_datas[ticker] = get_data(ticker, start_date=request.form.get("start_date"), end_date=request.form.get("end_date"), interval="1d")
 
-    print(historical_datas['XLF'])
-    #use historical_data to do math
+    for each in ticker_list:
+        indiv_drawdown = fund_datas[each]['high'] - fund_datas[each]['low']
+        weighted_drawdown = fund_weights[each] * indiv_drawdown
+        intermediate_drawdown += weighted_drawdown
 
+    date = pd.Series(fund_datas['SPY'].index.format()).to_numpy()
+    drawdown = intermediate_drawdown.values
+    print(date)
+    print(drawdown)
+    legend = 'Drawdown Data'
+    return render_template('chart.html', values=drawdown, labels=date, legend=legend, fund_list=fund_list, fund_datas=fund_datas)
+ 
     #### use a ticker list then get data for the entire portfolio
     # amazon_weekly= get_data("xlf", start_date=request.form.get("start_date"), end_date=request.form.get("end_date"), index_as_date = True, interval="1wk")
-
-    return redirect(url_for("home"))
 
 
 if __name__ == "__main__":

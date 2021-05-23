@@ -8,6 +8,8 @@
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
     <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+    <script src='static/Chart.min.js'></script>
+
 </head>
 
 <body>
@@ -44,23 +46,33 @@
         {% endfor %}
     </div>
 
+    <!-- <div class="ui segment">
+        {% for each in fund_datas['XLF'] %}
+            <div>
+                <p> {{ each }}</p>
+            </div>            
+        {% endfor %}
+    </div> -->
+
     <div style="margin-top: 50px;" class="ui container">
         <h1 class="ui center aligned header">Portfolio Statistics</h1>
 
         <h2>Total Returns</h2>
 
-        <form class="ui form" action="/refresh/" method="get">
+        <form class="ui form" action="/refresh" method="post">
             <label>Time Frame Required</label>
-            <input type="date" id="start_date" name="start_date">
-            <input type="date" id="end_date" name="end_date">
+            <input type="date" name="start_date" 
+            placeholder="dd-mm-yyyy" id="start_date"
+            min="1997-01-01" max="2030-12-31">
+            <input type="date" name="end_date" 
+            placeholder="dd-mm-yyyy" id="end_date"
+            min="1997-01-01" max="2030-12-31">
             <button class="ui blue button" type="submit">Refresh</button>   
         </form>
 
         <h2>Logarithmic Returns</h2>
+        
 
-        <h2>Drawdowns</h2>
-
-    </div>
 </body>
 
 </html>
